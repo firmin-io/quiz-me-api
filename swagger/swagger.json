@@ -1,0 +1,1720 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2.0",
+    "title": "Quiz Me",
+    "description": "Quiz Me Api"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "tags": [
+    {
+      "name": "quizzes"
+    },
+    {
+      "name": "users"
+    },
+    {
+      "name": "questions"
+    },
+    {
+      "name": "flashcards"
+    },
+    {
+      "name": "search"
+    }
+  ],
+  "basePath": "/v1/qm",
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Register a new user",
+        "parameters": [
+          {
+            "name": "request",
+            "description": "The request body.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/register_request"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful response (no content)",
+            "schema": {
+              "$ref": "#/definitions/login_response"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Login",
+        "parameters": [
+          {
+            "name": "request",
+            "description": "The request body.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/login_request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/login_response"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/quizzes": {
+      "post": {
+        "tags": [
+          "quizzes"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Create a quiz for a user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The user id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "request",
+            "description": "The request body.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/quiz_model"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/quiz_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "quizzes"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Get quizzes for a user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The user id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/quizzes_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/quizzes/{id}": {
+      "put": {
+        "tags": [
+          "quizzes"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Update quiz",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The quiz id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "request",
+            "description": "The request body.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/quiz_model"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/quiz_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "quizzes"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Delete quiz",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The quiz id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/quizzes/{id}/questions": {
+      "post": {
+        "tags": [
+          "questions"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Create question",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The quiz id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "request",
+            "description": "The request body.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/question_model"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/quiz_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "questions"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Get questions",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The quiz id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/questions_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/questions/{id}": {
+      "put": {
+        "tags": [
+          "questions"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Update question",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The question id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "request",
+            "description": "The request body.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/question_model"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/quiz_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "questions"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Delete question",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The question id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/flashcard-decks": {
+      "post": {
+        "tags": [
+          "flashcards"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Create a card deck for a user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The user id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "request",
+            "description": "The request body.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/flashcard_deck_model"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/quiz_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "flashcards"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Get decks for a user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The user id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/flashcard_decks_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/flashcard-decks/{id}": {
+      "put": {
+        "tags": [
+          "flashcards"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Update deck",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The deck id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "request",
+            "description": "The request body.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/flashcard_deck_model"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/flashcard_deck_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "flashcards"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Delete deck",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The deck id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/flashcard-decks/{id}/flashcards": {
+      "post": {
+        "tags": [
+          "flashcards"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Create flashcard",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The deck id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "request",
+            "description": "The request body.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/flashcard_model"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/flashcard_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "flashcards"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Get flashcards",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The deck id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/flashcards_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/flashcards/{id}": {
+      "put": {
+        "tags": [
+          "flashcards"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Update flashcard",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The card id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "request",
+            "description": "The request body.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/flashcard_model"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/flashcard_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "flashcards"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Delete card",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The card id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "error": {
+    "description": "Error object",
+    "type": "object",
+    "properties": {
+      "issue": {
+        "description": "The issue",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255
+      },
+      "description": {
+        "description": "Description.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255
+      },
+      "debug_id": {
+        "description": "Debug Id.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255
+      }
+    },
+    "required": [
+      "issue"
+    ]
+    },
+    "answer_model": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "description": "The value",
+          "type": "string"
+        },
+        "is_correct": {
+          "description": "flag indicating if the answer is correct",
+          "type": "boolean"
+        }
+      },
+      "required": [
+          "value"
+        ]
+    },
+    "register_request": {
+      "type": "object",
+      "properties": {
+        "first_name": {
+        "description": "First name.",
+        "type": "string",
+        "minLength": 1
+        },
+        "last_name": {
+          "description": "Last name.",
+          "type": "string",
+          "minLength": 1
+        },
+        "email": {
+          "description": "Email.",
+          "type": "string",
+          "minLength": 1
+        },
+        "password": {
+          "description": "Password.",
+          "type": "string",
+          "maxLength": 16
+        }
+      },
+      "required": [
+        "first_name",
+        "last_name",
+        "email",
+        "password"
+      ]
+    },
+    "login_request": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "description": "Email.",
+          "type": "string",
+          "minLength": 1
+        },
+        "password": {
+          "description": "Password.",
+          "type": "string",
+          "maxLength": 16
+        }
+      },
+      "required": [
+        "email",
+        "password"
+      ]
+    },
+    "login_response": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "The user id.",
+          "type": "string",
+          "minLength": 1
+        },
+        "token": {
+          "description": "The auth token.",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "token"
+      ]
+    },
+    "quiz_model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "The id.",
+          "type": "string",
+          "minLength": 1,
+          "readOnly": true
+        },
+        "user_id": {
+          "description": "The user id.",
+          "type": "string",
+          "minLength": 1
+        },
+        "views": {
+          "description": "The view count",
+          "type": "number",
+          "readOnly": true
+        },
+        "name": {
+          "description": "The name.",
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "description": "The description.",
+          "type": "string",
+          "minLength": 1
+        },
+        "questions": {
+          "description": "The questions",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/question_model"
+          },
+          "readOnly": true
+        }
+      },
+      "required": [
+        "user_id",
+        "name",
+        "description"
+      ]
+    },
+    "quizzes_model": {
+      "type": "object",
+      "properties": {
+        "quizzes": {
+          "description": "The quizzes",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/quiz_model"
+          }
+        }
+      },
+      "required": [
+        "quizzes"
+      ]
+    },
+    "question_model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "The id.",
+          "type": "string",
+          "minLength": 1,
+          "readOnly": true
+        },
+        "quiz_id": {
+          "description": "The quiz id.",
+          "type": "string",
+          "minLength": 1
+        },
+        "question_type": {
+          "description": "The question type.",
+          "type": "string",
+          "minLength": 1
+        },
+        "question": {
+          "description": "The question",
+          "type": "string"
+        },
+        "answers": {
+          "description": "The answers.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/answer_model"
+          }
+        }
+      },
+      "required": [
+        "quiz_id",
+        "question",
+        "answers",
+        "question_type"
+      ]
+    },
+    "questions_model": {
+      "type": "object",
+      "properties": {
+        "quizzes": {
+          "description": "The questions",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/question_model"
+          }
+        }
+      },
+      "required": [
+        "quizzes"
+      ]
+    },
+    "flashcard_model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "The id.",
+          "type": "string",
+          "minLength": 1,
+          "readOnly": true
+        },
+        "flashcard_deck_id": {
+          "description": "The deck id.",
+          "type": "string",
+          "minLength": 1
+        },
+        "question": {
+          "description": "The question.",
+          "type": "string",
+          "minLength": 1
+        },
+        "answer": {
+          "description": "The answer.",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "flashcard_deck_id",
+        "question",
+        "answer"
+      ]
+
+    },
+    "flashcards_model": {
+      "type": "object",
+      "properties": {
+        "flashcards": {
+          "description": "The cards",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/flashcard_model"
+          }
+        }
+      },
+      "required": [
+        "quizzes"
+      ]
+    },
+    "flashcard_deck_model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "The id.",
+          "type": "string",
+          "minLength": 1,
+          "readOnly": true
+        },
+        "user_id": {
+          "description": "The user id.",
+          "type": "string",
+          "minLength": 1
+        },
+        "views": {
+          "description": "The view count",
+          "type": "number",
+          "readOnly": true
+        },
+        "name": {
+          "description": "The name.",
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "description": "The description.",
+          "type": "string",
+          "minLength": 1
+        },
+        "flashcards": {
+          "description": "The questions",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/flashcard_model"
+          },
+          "readOnly": true
+        }
+      },
+      "required": [
+        "user_id",
+        "name",
+        "description"
+      ]
+    },
+    "flashcard_decks_model": {
+      "type": "object",
+      "properties": {
+        "flashcard_decks": {
+          "description": "The decks",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/flashcard_deck_model"
+          }
+        }
+      },
+      "required": [
+        "flashcard_decks"
+      ]
+    }
+  }
+}
