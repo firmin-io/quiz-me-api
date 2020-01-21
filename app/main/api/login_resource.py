@@ -14,9 +14,12 @@ class LoginResource(Resource):
         try:
             login_request = LoginRequestModel.from_request_json(request.json)
             user = ud.get_by_email(login_request.email)
-            # this throws an exception is the passwords don't match
+            # this throws an exception if the passwords don't match
             hash_utils.check_password(login_request.password, user.password)
-            return {'id': user.id, 'token': auth_utils.generate_auth_token(user.id).decode()}, 200
+            return {'id': user.id,
+                    'first_name': user.first_name,
+                    'email': user.email,
+                    'token': auth_utils.generate_auth_token(user.id).decode()}, 200
 
         except errors.ApiError as ae:
             return errors.build_response_from_api_error(ae)

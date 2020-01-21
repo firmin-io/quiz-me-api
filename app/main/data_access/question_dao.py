@@ -10,38 +10,29 @@ from boto3.dynamodb.conditions import Key, Attr
 table = db.dynamo_db.Table('qm_question')
 
 
-def get_by_quiz_id(quiz_id):
+def get_by_quiz_id(quiz_id, quietly=False):
     try:
         response = table.query(
             IndexName="quiz_id-index",
             KeyConditionExpression=Key('quiz_id').eq(quiz_id)
         )
-        items = validation.validate_items_exist(response)
-        questions = []
-        print(len(items))
-        for item in items:
-            print('blah - {}'.format(item))
-            questions.append(QuestionModel.from_dynamo_json(item))
+        items = validation.validate_items_exist(response, quietly)
+        questions = [QuestionModel.from_dynamo_json(question) for question in items if items]
+
         return questions
+
     except ClientError:
+        raise errors.ApiError(errors.internal_server_error)
+
+    except errors.ApiError as e:
+        raise e
+
+    except Exception as e:
         raise errors.ApiError(errors.internal_server_error)
 
 
 def get_by_quiz_id_quietly(quiz_id):
-    try:
-        response = table.query(
-            IndexName="quiz_id-index",
-            KeyConditionExpression=Key('quiz_id').eq(quiz_id)
-        )
-        items = validation.validate_items_exist_quietly(response)
-        questions = []
-        print(len(items))
-        for item in items:
-            print('blah - {}'.format(item))
-            questions.append(QuestionModel.from_dynamo_json(item))
-        return questions
-    except ClientError:
-        raise errors.ApiError(errors.internal_server_error)
+    return get_by_quiz_id(quiz_id, True)
 
 
 def get_by_id(_id):
@@ -53,20 +44,31 @@ def get_by_id(_id):
         )
         item = validation.validate_item_exists(response)
         return QuestionModel.from_dynamo_json(item)
+
     except ClientError:
         raise errors.ApiError(errors.internal_server_error)
 
+    except errors.ApiError as e:
+        raise e
 
-def create(user):
+    except Exception:
+        raise errors.ApiError(errors.internal_server_error)
+
+
+def create(question):
     try:
         _id = generate_id()
-        user.id = _id
-        user.password = hash_password(user.password)
+        question.id = _id
         table.put_item(
-            Item=user.to_json()
+            Item=question.to_json()
         )
         return get_by_id(_id)
+
     except ClientError:
         raise errors.ApiError(errors.internal_server_error)
-    except Exception as e:
+
+    except errors.ApiError as e:
+        raise e
+
+    except Exception:
         raise errors.ApiError(errors.internal_server_error)

@@ -6,7 +6,7 @@ class Model:
     def __init__(self):
         pass
 
-    def to_json(self, ignore_empty=False):
+    def to_json(self):
         pass
 
     @classmethod
@@ -47,7 +47,7 @@ class FlashcardDeckModel(Model):
         self.description = description,
         self.flashcards = flashcards
 
-    def to_json(self, ignore_empty=False):
+    def to_json(self):
         return {
             'id': self._id,
             'user_id': self.user_id,
@@ -83,7 +83,7 @@ class FlashcardModel(Model):
         self.question = question
         self.answer = answer
 
-    def to_json(self, ignore_empty=False):
+    def to_json(self):
         return {
             'id': self.id,
             'flashcard_deck_id': self.flashcard_deck_id,
@@ -125,7 +125,7 @@ class UserModel(Model):
         self.last_name = last_name
         self.password = password
 
-    def to_json(self, ignore_empty=False):
+    def to_json(self):
         return {
             'id': self.id,
             'email': self.email,
@@ -160,23 +160,57 @@ class UserModel(Model):
             raise_dynamo_error(e)
 
 
+class AnswerModel(Model):
+
+    def __init__(self, value, is_correct=False):
+        Model.__init__(self)
+        self.value = value
+        self.is_correct = is_correct
+
+    def to_json(self):
+        return {
+            'value': self.value,
+            'is_correct': self.is_correct
+        }
+
+    @classmethod
+    def from_request_json(cls, json, logger=None):
+        try:
+            return AnswerModel(
+                value=json['value'],
+                is_correct=json['is_correct']
+            )
+        except KeyError as e:
+            raise_bad_request_error(e)
+
+    @classmethod
+    def from_dynamo_json(cls, json, logger=None):
+        try:
+            return AnswerModel(
+                value=json['value'],
+                is_correct=json['is_correct']
+            )
+        except KeyError as e:
+            raise_dynamo_error(e)
+
+
 class QuestionModel(Model):
 
-    def __init__(self, quiz_id, question_type, questions, answers, _id=None):
+    def __init__(self, quiz_id, question_type, question, answers, _id=None):
         Model.__init__(self)
         self.id = _id
         self.quiz_id = quiz_id
         self.question_type = question_type
-        self.questions = questions
+        self.question = question
         self.answers = answers
 
-    def to_json(self, ignore_empty=False):
+    def to_json(self):
         return {
             'id': self.id,
             'quiz_id': self.quiz_id,
             'question_type': self.question_type,
-            'questions': self.questions,
-            'answers': self.answers
+            'question': self.question,
+            'answers': [answer.to_json() for answer in self.answers]
         }
 
     @classmethod
@@ -185,8 +219,8 @@ class QuestionModel(Model):
             return QuestionModel(
                 quiz_id=json['quiz_id'],
                 question_type=json['question_type'],
-                questions=json['questions'],
-                answers=json['answers']
+                question=json['question'],
+                answers=[AnswerModel.from_request_json(answer) for answer in json['answers']]
             )
         except KeyError as e:
             raise_bad_request_error(e)
@@ -198,8 +232,8 @@ class QuestionModel(Model):
                 _id=json['id'],
                 quiz_id=json['quiz_id'],
                 question_type=json['question_type'],
-                questions=json['questions'],
-                answers=json['answers']
+                question=json['question'],
+                answers=[AnswerModel.from_dynamo_json(answer) for answer in json['answers']]
             )
         except KeyError as e:
             raise_dynamo_error(e)
@@ -216,24 +250,15 @@ class QuizModel(Model):
         self.views = views
         self.questions = questions
 
-    def to_json(self, ignore_empty=False):
-        if ignore_empty:
-            return {
-                'id': self.id,
-                'user_id': self.user_id,
-                'name': self.name,
-                'description': self.description
-            }
-
+    def to_json(self):
         return {
             'id': self.id,
             'user_id': self.user_id,
             'name': self.name,
             'description': self.description,
-            'views': self.views,
-            'questions': self.questions
+            'questions': [question.to_json() for question in self.questions if self.questions]
         }
-
+        
     @classmethod
     def from_request_json(cls, json, logger=None):
         try:
@@ -249,7 +274,7 @@ class QuizModel(Model):
     def from_dynamo_json(cls, json, logger=None):
         try:
             return QuizModel(
-                _id=json['json'],
+                _id=json['id'],
                 user_id=json['user_id'],
                 name=json['name'],
                 description=json['description']
@@ -264,5 +289,5 @@ def raise_bad_request_error(e):
 
 def raise_dynamo_error(e):
     raise errors.ApiError(
-        errors.Error('MISSING_EXPECTED_ATTRIBUTE', 'An expected attribute [{}] is missing'.format(str(e)), 422)
+        errors.Error('MISSING_EXPECTED_ATTRIBUTE', str(e), 422)
     )

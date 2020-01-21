@@ -6,5 +6,5 @@ def generate_id():
 
 
 def generate_debug_id():
-    return 'di-{}'.format(str(uuid.uuid4()))
+    return 'di-{}'.format(generate_id())
 

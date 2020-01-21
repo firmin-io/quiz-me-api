@@ -16,7 +16,7 @@ def get_by_email(email):
             IndexName="email-index",
             KeyConditionExpression=Key('email').eq(email)
         )
-        item = validation.validate_items_exist(response, False)[0]
+        item = validation.validate_items_exist(response)[0]
         return UserModel.from_dynamo_json(item)
     except ClientError:
         raise errors.ApiError(errors.internal_server_error)

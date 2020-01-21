@@ -13,7 +13,8 @@ def validate_item_exists(response):
 def validate_items_exist(response, quietly=False):
     try:
         return response['Items']
-    except KeyError:
+    except KeyError as e:
+        print(str(e))
         if quietly:
             return []
         raise errors.ApiError(errors.not_found)

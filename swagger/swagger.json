@@ -17,19 +17,13 @@
   ],
   "tags": [
     {
-      "name": "quizzes"
-    },
-    {
       "name": "users"
     },
     {
-      "name": "questions"
+      "name": "quizzes"
     },
     {
       "name": "flashcards"
-    },
-    {
-      "name": "search"
     }
   ],
   "basePath": "/v1/qm",
@@ -149,6 +143,85 @@
       }
     },
     "/users/{id}/quizzes": {
+      "get": {
+        "tags": [
+          "quizzes"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Get quizzes for a user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The user id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/quizzes_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/quizzes/": {
       "post": {
         "tags": [
           "quizzes"
@@ -205,83 +278,6 @@
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "422": {
-            "description": "Unprocessable Entity",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "default": {
-            "description": "Error response",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "quizzes"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "description": "Get quizzes for a user",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "description": "The Auth token",
-            "type": "string",
-            "minLength": 1,
-            "in": "header",
-            "required": true
-          },
-          {
-            "name": "id",
-            "description": "The user id",
-            "type": "string",
-            "minLength": 1,
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "schema": {
-              "$ref": "#/definitions/quizzes_model"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "404": {
-            "description": "Not found",
             "schema": {
               "$ref" : "#/definitions/error"
             }
@@ -457,10 +453,10 @@
         }
       }
     },
-    "/quizzes/{id}/questions": {
+    "/questions": {
       "post": {
         "tags": [
-          "questions"
+          "quizzes"
         ],
         "produces": [
           "application/json"
@@ -537,89 +533,12 @@
             }
           }
         }
-      },
-      "get": {
-        "tags": [
-          "questions"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "description": "Get questions",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "description": "The Auth token",
-            "type": "string",
-            "minLength": 1,
-            "in": "header",
-            "required": true
-          },
-          {
-            "name": "id",
-            "description": "The quiz id",
-            "type": "string",
-            "minLength": 1,
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "schema": {
-              "$ref": "#/definitions/questions_model"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "422": {
-            "description": "Unprocessable Entity",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "default": {
-            "description": "Error response",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          }
-        }
       }
     },
     "/questions/{id}": {
       "put": {
         "tags": [
-          "questions"
+          "quizzes"
         ],
         "produces": [
           "application/json"
@@ -699,7 +618,7 @@
       },
       "delete": {
         "tags": [
-          "questions"
+          "quizzes"
         ],
         "produces": [
           "application/json"
@@ -767,6 +686,85 @@
       }
     },
     "/users/{id}/flashcard-decks": {
+      "get": {
+        "tags": [
+          "flashcards"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "description": "Get decks for a user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "description": "The Auth token",
+            "type": "string",
+            "minLength": 1,
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "id",
+            "description": "The user id",
+            "type": "string",
+            "minLength": 1,
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/flashcard_decks_model"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/flashcard-decks": {
       "post": {
         "tags": [
           "flashcards"
@@ -823,83 +821,6 @@
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "422": {
-            "description": "Unprocessable Entity",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "default": {
-            "description": "Error response",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "flashcards"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "description": "Get decks for a user",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "description": "The Auth token",
-            "type": "string",
-            "minLength": 1,
-            "in": "header",
-            "required": true
-          },
-          {
-            "name": "id",
-            "description": "The user id",
-            "type": "string",
-            "minLength": 1,
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "schema": {
-              "$ref": "#/definitions/flashcard_decks_model"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "404": {
-            "description": "Not found",
             "schema": {
               "$ref" : "#/definitions/error"
             }
@@ -1075,7 +996,7 @@
         }
       }
     },
-    "/flashcard-decks/{id}/flashcards": {
+    "/flashcards": {
       "post": {
         "tags": [
           "flashcards"
@@ -1132,83 +1053,6 @@
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "422": {
-            "description": "Unprocessable Entity",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "default": {
-            "description": "Error response",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "flashcards"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "description": "Get flashcards",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "description": "The Auth token",
-            "type": "string",
-            "minLength": 1,
-            "in": "header",
-            "required": true
-          },
-          {
-            "name": "id",
-            "description": "The deck id",
-            "type": "string",
-            "minLength": 1,
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "schema": {
-              "$ref": "#/definitions/flashcards_model"
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "schema": {
-              "$ref" : "#/definitions/error"
-            }
-          },
-          "404": {
-            "description": "Not found",
             "schema": {
               "$ref" : "#/definitions/error"
             }
@@ -1489,6 +1333,21 @@
         },
         "token": {
           "description": "The auth token.",
+          "type": "string",
+          "minLength": 1
+        },
+        "first_name": {
+          "description": "The first name.",
+          "type": "string",
+          "minLength": 1
+        },
+        "last_name": {
+          "description": "The last name.",
+          "type": "string",
+          "minLength": 1
+        },
+        "email": {
+          "description": "The email",
           "type": "string",
           "minLength": 1
         }
