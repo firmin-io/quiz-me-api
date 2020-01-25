@@ -1,21 +1,26 @@
-from app.main.data_access import dynamo_errors as de, dynamo_db as db
+from api.data_access import dynamo_db as db
 from botocore.exceptions import ClientError
 
-from app.main.common import errors, validation
-from app.main.model.model import UserModel
-from app.main.utils.hash_utils import hash_password, check_password
-from app.main.utils.id_utils import generate_id
-from boto3.dynamodb.conditions import Key, Attr
+from api.common import validation, errors
+from api.model.model import UserModel
+
+from boto3.dynamodb.conditions import Key
+
+from api.utils.hash_utils import hash_password
+from api.utils.id_utils import generate_id
 
 table = db.dynamo_db.Table('qm_user')
 
 
 def get_by_email(email):
+
     try:
         response = table.query(
             IndexName="email-index",
             KeyConditionExpression=Key('email').eq(email)
         )
+        print('dynamo response: ')
+        print(response)
         item = validation.validate_items_exist(response)[0]
         return UserModel.from_dynamo_json(item)
     except ClientError:
@@ -41,7 +46,7 @@ def create(user):
         user.id = _id
         user.password = hash_password(user.password)
         table.put_item(
-            Item=user.to_json()
+            Item=user.to_dict()
         )
         return get_by_id(_id)
     except ClientError:

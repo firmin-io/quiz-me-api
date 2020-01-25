@@ -1,4 +1,4 @@
-from app.main.common import errors
+from api.common import errors
 
 
 class Model:
@@ -6,7 +6,7 @@ class Model:
     def __init__(self):
         pass
 
-    def to_json(self):
+    def to_dict(self):
         pass
 
     @classmethod
@@ -47,7 +47,7 @@ class FlashcardDeckModel(Model):
         self.description = description,
         self.flashcards = flashcards
 
-    def to_json(self):
+    def to_dict(self):
         return {
             'id': self._id,
             'user_id': self.user_id,
@@ -83,7 +83,7 @@ class FlashcardModel(Model):
         self.question = question
         self.answer = answer
 
-    def to_json(self):
+    def to_dict(self):
         return {
             'id': self.id,
             'flashcard_deck_id': self.flashcard_deck_id,
@@ -125,7 +125,7 @@ class UserModel(Model):
         self.last_name = last_name
         self.password = password
 
-    def to_json(self):
+    def to_dict(self):
         return {
             'id': self.id,
             'email': self.email,
@@ -167,7 +167,7 @@ class AnswerModel(Model):
         self.value = value
         self.is_correct = is_correct
 
-    def to_json(self):
+    def to_dict(self):
         return {
             'value': self.value,
             'is_correct': self.is_correct
@@ -204,13 +204,13 @@ class QuestionModel(Model):
         self.question = question
         self.answers = answers
 
-    def to_json(self):
+    def to_dict(self):
         return {
             'id': self.id,
             'quiz_id': self.quiz_id,
             'question_type': self.question_type,
             'question': self.question,
-            'answers': [answer.to_json() for answer in self.answers]
+            'answers': [answer.to_dict() for answer in self.answers]
         }
 
     @classmethod
@@ -250,13 +250,13 @@ class QuizModel(Model):
         self.views = views
         self.questions = questions
 
-    def to_json(self):
+    def to_dict(self):
         return {
             'id': self.id,
             'user_id': self.user_id,
             'name': self.name,
             'description': self.description,
-            'questions': [question.to_json() for question in self.questions if self.questions]
+            'questions': [question.to_dict() for question in self.questions if self.questions]
         }
         
     @classmethod

@@ -1,24 +1,25 @@
-from boto3.dynamodb.conditions import Key
+from api.data_access import dynamo_db as db
 from botocore.exceptions import ClientError
 
-from app.main.common import errors, validation
-from app.main.data_access import dynamo_db as db
-from app.main.model.model import FlashcardModel
-from app.main.utils.id_utils import generate_id
+from api.common import validation, errors
+from api.model.model import QuestionModel
+from boto3.dynamodb.conditions import Key
 
-table = db.dynamo_db.Table('qm_flashcard')
+from api.utils.id_utils import generate_id
+
+table = db.dynamo_db.Table('qm_question')
 
 
-def get_by_flashcard_deck_id(flashcard_deck_id, quietly=False):
+def get_by_quiz_id(quiz_id, quietly=False):
     try:
         response = table.query(
-            IndexName="flashcard_deck_id-index",
-            KeyConditionExpression=Key('flashcard_deck_id').eq(flashcard_deck_id)
+            IndexName="quiz_id-index",
+            KeyConditionExpression=Key('quiz_id').eq(quiz_id)
         )
         items = validation.validate_items_exist(response, quietly)
-        flashcards = [FlashcardModel.from_dynamo_json(item) for item in items if items]
+        questions = [QuestionModel.from_dynamo_json(question) for question in items if items]
 
-        return flashcards
+        return questions
 
     except ClientError:
         raise errors.ApiError(errors.internal_server_error)
@@ -30,8 +31,8 @@ def get_by_flashcard_deck_id(flashcard_deck_id, quietly=False):
         raise errors.ApiError(errors.internal_server_error)
 
 
-def get_by_flashcard_deck_id_quietly(quiz_id):
-    return get_by_flashcard_deck_id(quiz_id, True)
+def get_by_quiz_id_quietly(quiz_id):
+    return get_by_quiz_id(quiz_id, True)
 
 
 def get_by_id(_id):
@@ -42,7 +43,7 @@ def get_by_id(_id):
             }
         )
         item = validation.validate_item_exists(response)
-        return FlashcardModel.from_dynamo_json(item)
+        return QuestionModel.from_dynamo_json(item)
 
     except ClientError:
         raise errors.ApiError(errors.internal_server_error)
@@ -54,12 +55,12 @@ def get_by_id(_id):
         raise errors.ApiError(errors.internal_server_error)
 
 
-def create(flashcard):
+def create(question):
     try:
         _id = generate_id()
-        flashcard.id = _id
+        question.id = _id
         table.put_item(
-            Item=flashcard.to_json()
+            Item=question.to_dict()
         )
         return get_by_id(_id)
 

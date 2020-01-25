@@ -1,7 +1,7 @@
 import re
 
-from app.main.common import errors
-from app.main.data_access import user_dao
+from api.common import errors
+from api.data_access import user_dao
 
 
 def validate_item_exists(response):

@@ -1,10 +1,10 @@
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 
-from app.main.common import errors, validation
-from app.main.data_access import dynamo_db as db, question_dao, flashcard_dao
-from app.main.model.model import FlashcardDeckModel
-from app.main.utils.id_utils import generate_id
+from api.common import validation, errors
+from api.data_access import dynamo_db as db, question_dao, flashcard_dao
+from api.model.model import FlashcardDeckModel, QuizModel
+from api.utils.id_utils import generate_id
 
 table = db.dynamo_db.Table('qm_flashcard_deck')
 
@@ -67,7 +67,7 @@ def create(quiz):
         _id = generate_id()
         quiz.id = _id
         table.put_item(
-            Item=quiz.to_json(True)
+            Item=quiz.to_dict(True)
         )
         return get_by_id(_id)
     except ClientError as e:

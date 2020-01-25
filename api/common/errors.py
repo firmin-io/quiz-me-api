@@ -1,3 +1,4 @@
+from api.utils.api_utils import build_response_with_body
 
 
 class Error:
@@ -8,7 +9,7 @@ class Error:
         self.description = description,
         self.debug_id = debug_id
 
-    def to_json(self):
+    def to_dict(self):
         if self.debug_id:
             return {
                 'issue': self.issue,
@@ -59,4 +60,4 @@ def build_response_from_api_error(ae, logger=None):
         logger.log(ae.error)
         ae.api_error.debug_id = logger.debug_id
 
-    return ae.api_error.to_json(), ae.api_error.code
+    return build_response_with_body(ae.api_error.code, ae.api_error.to_dict())

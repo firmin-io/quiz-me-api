@@ -1,0 +1,9 @@
+{
+  "name": "quiz_me_api",
+  "version": "1.0.0",
+  "author": "Firmin Saint-Amour",
+  "license": "MIT",
+  "dependencies": {
+    "serverless-python-requirements": "^2.4.1"
+  }
+}
