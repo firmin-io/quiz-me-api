@@ -1,6 +1,7 @@
 import re
 
 from app.main.common import errors
+from app.main.data_access import user_dao
 
 
 def validate_item_exists(response):
@@ -22,6 +23,16 @@ def validate_items_exist(response, quietly=False):
 
 def validate_items_exist_quietly(response):
     return validate_items_exist(response, True)
+
+
+def validate_user_exists(email):
+    try:
+        user = user_dao.get_by_email(email)
+        print('user.id {}'.format(user.id))
+    except errors.ApiError as e:
+        if e.api_error.issue == 'NOT_FOUND':
+            raise errors.ApiError(errors.invalid_user_id)
+        return
 
 
 def validate_request_id_header_is_present(request):

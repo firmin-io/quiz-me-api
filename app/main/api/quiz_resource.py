@@ -4,7 +4,7 @@ from flask import request
 from flask_restful import Resource
 
 from app.main.common import errors
-from app.main.common.validation import validate_authorization_header_is_present
+from app.main.common.validation import validate_authorization_header_is_present, validate_user_exists
 from app.main.data_access import quiz_dao, user_dao
 from app.main.model.model import QuizModel
 from app.main.utils import auth_utils, id_utils, logging_utils
@@ -44,11 +44,10 @@ class UserQuizzesResource(Resource):
         try:
             token = validate_authorization_header_is_present(request)
             auth_utils.decode_auth_token(token)
-            json = []
+
             items = quiz_dao.get_by_user_id(user_id)
 
-            for item in items:
-                json.append(item.to_json())
+            json = [item.to_json() for item in items if items]
 
             return json, 200
 
@@ -67,12 +66,3 @@ class UserQuizzesResource(Resource):
     def delete(self):
         return errors.build_response_from_api_error(errors.ApiError(errors.forbidden))
 
-
-def validate_user_exists(email):
-    try:
-        user = user_dao.get_by_email(email)
-        print('user.id {}'.format(user.id))
-    except errors.ApiError as e:
-        if e.api_error.issue == 'NOT_FOUND':
-            raise errors.ApiError(errors.invalid_user_id)
-        return
