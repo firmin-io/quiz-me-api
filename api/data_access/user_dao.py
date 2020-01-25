@@ -41,15 +41,23 @@ def get_by_id(_id):
 
 
 def create(user):
+    print('creating user...')
     try:
         _id = generate_id()
+        print('id generated')
         user.id = _id
         user.password = hash_password(user.password)
+        print('hash generated')
         table.put_item(
             Item=user.to_dict()
         )
+        print('success creating user')
         return get_by_id(_id)
-    except ClientError:
+    except ClientError as e:
+        print(e)
+        print(str(e))
         raise errors.ApiError(errors.internal_server_error)
     except Exception as e:
+        print(e)
+        print(str(e))
         raise errors.ApiError(errors.internal_server_error)

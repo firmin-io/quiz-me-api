@@ -122,7 +122,7 @@ def hashpw(key, salt):
     if minor >= 'a':
         key += '\0'
         
-    key = [ord(ch) for ch in key]
+    key = [ch for ch in key]
     state = blowfish.initstate()
     # Setting up S-Boxes and Subkeys 
     blowfish.expandstate(state, csalt, key)
@@ -131,7 +131,7 @@ def hashpw(key, salt):
         blowfish.expand0state(state, key)
         blowfish.expand0state(state, csalt)
 
-    ciphertext = [ord(ch) for ch in "OrpheanBeholderScryDoubt"]
+    ciphertext = [ch for ch in "OrpheanBeholderScryDoubt"]
         
     # This can be precomputed later 
     j = 0;
@@ -171,7 +171,7 @@ def gensalt(log_rounds = 1):
     """Generate a random text salt for use with hashpw(). "log_rounds"
     defines the complexity of the hashing, increasing the cost as
     2**log_rounds."""
-    return _encode_salt([ord(ch) for ch in os.urandom(16)], min(max(log_rounds, 1), 31))
+    return _encode_salt([ch for ch in os.urandom(16)], min(max(log_rounds, 1), 31))
 
 
 Base64Code = "./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -192,7 +192,7 @@ index_64 = [
     51, 52, 53, 255, 255, 255, 255, 255]
 
 def CHAR64(c): 
-    return 255 if ord(c) > 127 else index_64[ord(c)]
+    return 255 if c > 127 else index_64[c]
 
 def decode_base64(data):
     dest_index = 0

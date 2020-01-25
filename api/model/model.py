@@ -136,6 +136,8 @@ class UserModel(Model):
 
     @classmethod
     def from_request_json(cls, json, logger=None):
+        print('building model')
+        print(json)
         try:
             return UserModel(
                 email=json['email'],
@@ -144,6 +146,7 @@ class UserModel(Model):
                 password=json['password']
             )
         except KeyError as e:
+            print('key error {}'.format(str(e)))
             raise_bad_request_error(e)
 
     @classmethod

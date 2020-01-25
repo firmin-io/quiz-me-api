@@ -60,4 +60,7 @@ def build_response_from_api_error(ae, logger=None):
         logger.log(ae.error)
         ae.api_error.debug_id = logger.debug_id
 
+    if ae.error:
+        print(ae.error)
+
     return build_response_with_body(ae.api_error.code, ae.api_error.to_dict())
