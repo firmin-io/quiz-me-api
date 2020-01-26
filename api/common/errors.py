@@ -46,6 +46,8 @@ missing_required_param = Error('BAD_REQUEST', 'A required parameter is missing',
 
 failed_to_login = Error('UNPROCESSABLE_ENTITY', 'Failed to login', 422)
 
+invalid_user_name_or_password = Error('INVALID_USER_NAME_OR_PASSWORD', 'Failed to login', 422)
+
 already_registered = Error('ALREADY_REGISTERED', 'An account exists for that email', 422)
 
 invalid_email = Error('INVALID_EMAIL', 'The email is invalid', 400)
