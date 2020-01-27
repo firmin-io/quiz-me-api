@@ -9,6 +9,9 @@ class Model:
     def to_dict(self):
         pass
 
+    def to_dynamo_dict(self):
+        pass
+
     @classmethod
     def from_request_json(cls, json, logger=None):
         pass
@@ -61,7 +64,8 @@ class FlashcardDeckModel(Model):
         return FlashcardDeckModel(
             user_id=json['user_id'],
             name=json['name'],
-            description=json['description']
+            description=json['description'],
+            flashcards=[]
         )
 
     @classmethod
@@ -134,6 +138,9 @@ class UserModel(Model):
             'password': self.password
         }
 
+    def to_dynamo_dict(self):
+        return self.to_dict()
+
     @classmethod
     def from_request_json(cls, json, logger=None):
         print('building model')
@@ -176,6 +183,9 @@ class AnswerModel(Model):
             'is_correct': self.is_correct
         }
 
+    def to_dynamo_dict(self):
+        return self.to_dict()
+
     @classmethod
     def from_request_json(cls, json, logger=None):
         try:
@@ -215,6 +225,9 @@ class QuestionModel(Model):
             'question': self.question,
             'answers': [answer.to_dict() for answer in self.answers]
         }
+    
+    def to_dynamo_dict(self):
+        return self.to_dict()
 
     @classmethod
     def from_request_json(cls, json, logger=None):
@@ -261,9 +274,18 @@ class QuizModel(Model):
             'description': self.description,
             'questions': [question.to_dict() for question in self.questions if self.questions]
         }
+
+    def to_dynamo_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'name': self.name,
+            'description': self.description
+        }
         
     @classmethod
     def from_request_json(cls, json, logger=None):
+        print(json)
         try:
             return QuizModel(
                 user_id=json['user_id'],

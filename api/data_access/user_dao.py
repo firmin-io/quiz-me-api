@@ -49,7 +49,7 @@ def create(user):
         user.password = hash_password(user.password)
         print('hash generated')
         table.put_item(
-            Item=user.to_dict()
+            Item=user.to_dynamo_dict()
         )
         print('success creating user')
         return get_by_id(_id)

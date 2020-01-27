@@ -9,7 +9,7 @@ from api.utils.api_utils import build_response_with_body
 
 def login(event, context):
     try:
-        login_request = LoginRequestModel.from_request_json(event['body'])
+        login_request = LoginRequestModel.from_request_json(json.loads(event['body']))
         user = ud.get_by_email(login_request.email)
         # this throws an exception if the passwords don't match
         hash_utils.check_password(login_request.password, user.password)
@@ -29,7 +29,7 @@ def login(event, context):
 def register(event, context):
     try:
         print('register')
-        user_request = UserModel.from_request_json(event['body'])
+        user_request = UserModel.from_request_json(json.loads(event['body']))
         print('user model:')
         print(user_request)
         validation.validate_email(user_request.email)

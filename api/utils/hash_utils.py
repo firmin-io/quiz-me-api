@@ -13,7 +13,7 @@ def hash_password(password):
 def check_password(password, password_hash):
     try:
         if not pbkdf2_sha256.verify(password, password_hash):
-            raise errors.ApiError(errors.failed_to_login)
+            raise errors.ApiError(errors.invalid_user_name_or_password)
 
     except Exception as e:
         print('unable to check password')

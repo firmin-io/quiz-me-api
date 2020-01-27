@@ -47,7 +47,8 @@ def get_by_id(_id):
         item = validation.validate_item_exists(response)
         print('got item')
         quiz = QuizModel.from_dynamo_json(item)
-        print(quiz)
+        print(quiz.to_dynamo_dict())
+        print('getting questions for quiz')
         questions = question_dao.get_by_quiz_id_quietly(quiz.id)
         quiz.questions = questions
         return quiz
@@ -64,12 +65,15 @@ def get_by_id(_id):
 
 def create(quiz):
     try:
+        print('creating quiz')
         _id = generate_id()
         quiz.id = _id
-        table.put_item(
-            Item=quiz.to_dict(True)
+        response = table.put_item(
+            Item=quiz.to_dynamo_dict()
         )
+        print('created quiz')
         return get_by_id(_id)
+
     except ClientError as e:
         raise errors.ApiError(errors.internal_server_error, e)
 
@@ -77,4 +81,4 @@ def create(quiz):
         raise e
 
     except Exception as e:
-        errors.ApiError(errors.internal_server_error, e)
+        raise errors.ApiError(errors.internal_server_error, e)

@@ -12,10 +12,13 @@ table = db.dynamo_db.Table('qm_question')
 
 def get_by_quiz_id(quiz_id, quietly=False):
     try:
+        print('getting question by quiz id')
         response = table.query(
             IndexName="quiz_id-index",
             KeyConditionExpression=Key('quiz_id').eq(quiz_id)
         )
+        print('dynamo response')
+        print(response)
         items = validation.validate_items_exist(response, quietly)
         questions = [QuestionModel.from_dynamo_json(question) for question in items if items]
 

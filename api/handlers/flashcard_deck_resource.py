@@ -2,7 +2,7 @@ from flask import request
 from flask_restful import Resource
 
 from api.common import errors
-from api.common.validation import validate_authorization_header_is_present, validate_user_exists
+from api.common.validation import validate_authorization_header_is_present, validate_user_exists_by_email
 from api.data_access import flashcard_deck_dao
 from api.model.model import FlashcardDeckModel
 from api.utils import auth_utils
@@ -15,7 +15,7 @@ class FlashcardDecksResource(Resource):
             token = validate_authorization_header_is_present(request)
             auth_utils.decode_auth_token(token)
             deck_request = FlashcardDeckModel.from_request_json(request.json)
-            validate_user_exists(deck_request.user_id)
+            validate_user_exists_by_email(deck_request.user_id)
             return flashcard_deck_dao.create(deck_request).to_dict(), 201
 
         except errors.ApiError as ae:
