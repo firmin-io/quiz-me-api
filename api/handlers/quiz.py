@@ -1,4 +1,5 @@
 import json
+import logging
 
 from api.common import errors
 from api.common.validation import validate_authorization_header_is_present, validate_user_exists_by_id
@@ -13,12 +14,12 @@ def create_quiz(event, context):
         token = validate_authorization_header_is_present(event['headers'])
         auth_utils.decode_auth_token(token)
         quiz_request = QuizModel.from_request_json(json.loads(event['body']))
-        print(quiz_request.user_id)
+        logging.debug(quiz_request.user_id)
         validate_user_exists_by_id(quiz_request.user_id)
         quiz = quiz_dao.create(quiz_request)
 
-        print(quiz)
-        print(quiz.to_dict())
+        logging.debug(quiz)
+        logging.debug(quiz.to_dict())
 
         return build_response_with_body(201, quiz.to_dict())
 
@@ -31,6 +32,7 @@ def create_quiz(event, context):
 
 def get_user_quizzes(event, context):
     try:
+        logging.debug('event headers: ', event['headers'])
         token = validate_authorization_header_is_present(event['headers'])
         auth_utils.decode_auth_token(token)
 
@@ -52,4 +54,14 @@ def update_quiz(event, context):
 
 
 def delete_quiz(event, context):
-    pass
+    try:
+        token = validate_authorization_header_is_present(event['headers'])
+        auth_utils.decode_auth_token(token)
+
+        return build_response_with_body(200, quiz_dao.delete(event['pathParameters']['user_id']))
+
+    except errors.ApiError as ae:
+        return errors.build_response_from_api_error(ae)
+
+    except Exception as e:
+        return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))

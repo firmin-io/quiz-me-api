@@ -1,11 +1,11 @@
-from api.data_access import dynamo_db as db
-from botocore.exceptions import ClientError
-
-from api.common import validation, errors
-from api.model.model import UserModel
+import logging
 
 from boto3.dynamodb.conditions import Key
+from botocore.exceptions import ClientError
 
+from api.common import errors, validation
+from api.data_access import dynamo_db as db
+from api.model.model import UserModel
 from api.utils.hash_utils import hash_password
 from api.utils.id_utils import generate_id
 
@@ -19,8 +19,8 @@ def get_by_email(email):
             IndexName="email-index",
             KeyConditionExpression=Key('email').eq(email)
         )
-        print('dynamo response: ')
-        print(response)
+        logging.debug('dynamo response: ')
+        logging.debug(response)
         item = validation.validate_items_exist(response)[0]
         return UserModel.from_dynamo_json(item)
     except ClientError:
@@ -29,35 +29,38 @@ def get_by_email(email):
 
 def get_by_id(_id):
     try:
+        logging.debug('retrieve user by id')
         response = table.get_item(
             Key={
                 'id': _id
             }
         )
+        logging.debug('dynamo response: ', response)
         item = validation.validate_item_exists(response)
         return UserModel.from_dynamo_json(item)
-    except ClientError:
+    except ClientError as e:
+        logging.debug(e)
         raise errors.ApiError(errors.internal_server_error)
 
 
 def create(user):
-    print('creating user...')
+    logging.debug('creating user...')
     try:
         _id = generate_id()
-        print('id generated')
+        logging.debug('id generated')
         user.id = _id
         user.password = hash_password(user.password)
-        print('hash generated')
+        logging.debug('hash generated')
         table.put_item(
             Item=user.to_dynamo_dict()
         )
-        print('success creating user')
+        logging.debug('success creating user')
         return get_by_id(_id)
     except ClientError as e:
-        print(e)
-        print(str(e))
+        logging.debug(e)
+        logging.debug(str(e))
         raise errors.ApiError(errors.internal_server_error)
     except Exception as e:
-        print(e)
-        print(str(e))
+        logging.debug(e)
+        logging.debug(str(e))
         raise errors.ApiError(errors.internal_server_error)

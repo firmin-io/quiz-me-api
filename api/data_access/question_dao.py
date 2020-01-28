@@ -1,10 +1,11 @@
-from api.data_access import dynamo_db as db
+import logging
+
+from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 
-from api.common import validation, errors
+from api.common import errors, validation
+from api.data_access import dynamo_db as db
 from api.model.model import QuestionModel
-from boto3.dynamodb.conditions import Key
-
 from api.utils.id_utils import generate_id
 
 table = db.dynamo_db.Table('qm_question')
@@ -12,13 +13,13 @@ table = db.dynamo_db.Table('qm_question')
 
 def get_by_quiz_id(quiz_id, quietly=False):
     try:
-        print('getting question by quiz id')
+        logging.debug('getting question by quiz id')
         response = table.query(
             IndexName="quiz_id-index",
             KeyConditionExpression=Key('quiz_id').eq(quiz_id)
         )
-        print('dynamo response')
-        print(response)
+        logging.debug('dynamo response')
+        logging.debug(response)
         items = validation.validate_items_exist(response, quietly)
         questions = [QuestionModel.from_dynamo_json(question) for question in items if items]
 
@@ -59,12 +60,14 @@ def get_by_id(_id):
 
 
 def create(question):
+    logging.debug('creating question')
     try:
         _id = generate_id()
         question.id = _id
         table.put_item(
             Item=question.to_dict()
         )
+        logging.debug('question created')
         return get_by_id(_id)
 
     except ClientError:

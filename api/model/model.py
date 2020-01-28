@@ -1,3 +1,5 @@
+import logging
+
 from api.common import errors
 
 
@@ -231,6 +233,7 @@ class QuestionModel(Model):
 
     @classmethod
     def from_request_json(cls, json, logger=None):
+        logging.debug(json)
         try:
             return QuestionModel(
                 quiz_id=json['quiz_id'],

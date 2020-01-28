@@ -1,9 +1,10 @@
 import json
+import logging
 
 from api.common import errors, validation
-from api.model.model import LoginRequestModel, UserModel
 from api.data_access import user_dao as ud
-from api.utils import hash_utils, auth_utils
+from api.model.model import LoginRequestModel, UserModel
+from api.utils import auth_utils, hash_utils
 from api.utils.api_utils import build_response_with_body
 
 
@@ -28,13 +29,13 @@ def login(event, context):
 
 def register(event, context):
     try:
-        print('register')
+        logging.debug('register')
         user_request = UserModel.from_request_json(json.loads(event['body']))
-        print('user model:')
-        print(user_request)
+        logging.debug('user model:')
+        logging.debug(user_request)
         validation.validate_email(user_request.email)
         validate_user_does_not_exist(user_request.email)
-        print('user does not exist, proceeding with creation')
+        logging.debug('user does not exist, proceeding with creation')
         user = ud.create(user_request)
         res = build_response_with_body(200, {'id': user.id,
                                              'first_name': user.first_name,
@@ -48,20 +49,20 @@ def register(event, context):
         return errors.build_response_from_api_error(ae)
 
     except Exception as e:
-        print(e)
-        print(str(e))
+        logging.debug(e)
+        logging.debug(str(e))
         return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))
 
 
 def validate_user_does_not_exist(email):
     try:
         user = ud.get_by_email(email)
-        print('user.id {}'.format(user.id))
+        logging.debug('user.id {}'.format(user.id))
         raise errors.ApiError(errors.already_registered)
     except errors.ApiError as e:
-        print(e)
+        logging.debug(e)
         if e.api_error.issue == 'ALREADY_REGISTERED':
-            print('user exists')
+            logging.debug('user exists')
             raise e
 
     except Exception as e:
