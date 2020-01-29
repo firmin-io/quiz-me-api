@@ -45,6 +45,7 @@ def validate_user_exists_by_id(id):
         return
 
 
+
 def validate_request_id_header_is_present(request):
     try:
         request_id = str(request.headers['Request-Id'])
@@ -56,7 +57,6 @@ def validate_request_id_header_is_present(request):
 
 
 def validate_authorization_header_is_present(headers):
-    #print(headers)
     try:
         token = str(headers['Authorization'])
         if len(token) < 1:

@@ -27,17 +27,6 @@ def create_question(event, context):
         return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))
 
 
-def validate_quiz_exists(quiz_id):
-    try:
-        quiz = quiz_dao.get_by_id(quiz_id)
-        logging.debug('quiz id {}'.format(quiz.id))
-        return
-    except errors.ApiError as e:
-        if e.api_error.issue == 'NOT_FOUND':
-            raise errors.ApiError(errors.invalid_quiz_id)
-        return
-
-
 def update_question(event, context):
     # TODO
     pass
@@ -55,3 +44,14 @@ def delete_question(event, context):
 
     except Exception as e:
         return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))
+
+
+def validate_quiz_exists(quiz_id):
+    try:
+        quiz = quiz_dao.get_by_id(quiz_id)
+        logging.debug('quiz id {}'.format(quiz.id))
+        return
+    except errors.ApiError as e:
+        if e.api_error.issue == 'NOT_FOUND':
+            raise errors.ApiError(errors.invalid_quiz_id)
+        return

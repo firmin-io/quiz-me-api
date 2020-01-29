@@ -35,6 +35,31 @@ def get_by_user_id(user_id):
         errors.ApiError(errors.internal_server_error, e)
 
 
+
+def delete(_id):
+    try:
+        flashcard_deck = get_by_id(_id)
+        table.delete_item(
+            Key={
+                'id': _id
+            }
+        )
+
+        print('deleted:', _id)
+        for flashcard in flashcard_deck.flashcards:
+            flashcard_dao.delete(flashcard.id)
+
+    except errors.ApiError as e:
+        if e.api_error.issue == 'NOT_FOUND':
+            return
+
+    except ClientError as e:
+        raise errors.ApiError(errors.internal_server_error)
+
+    except Exception as e:
+        raise errors.ApiError(errors.internal_server_error, e)
+
+
 def get_by_id(_id):
     try:
         print('getting deck by id')

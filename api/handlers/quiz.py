@@ -63,5 +63,8 @@ def delete_quiz(event, context):
     except errors.ApiError as ae:
         return errors.build_response_from_api_error(ae)
 
+    except KeyError as e:
+        return errors.build_response_from_api_error(errors.Error('MISSING_REQUIRED_PARAMETER', str(e), 400))
+
     except Exception as e:
         return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))

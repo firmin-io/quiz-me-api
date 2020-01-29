@@ -56,6 +56,8 @@ invalid_user_id = Error('INVALID_USER_ID', 'The provided user id is invalid', 42
 
 invalid_quiz_id = Error('INVALID_QUIZ_ID', 'The provided quiz id is invalid', 422)
 
+invalid_flashcard_deck_id = Error('INVALID_FLASHCARD_DECK_ID', 'The provided flashcard deck id is invalid', 422)
+
 
 def build_response_from_api_error(ae, logger=None):
     if logger and ae.error:

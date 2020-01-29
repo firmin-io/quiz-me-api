@@ -58,7 +58,7 @@ class FlashcardDeckModel(Model):
             'user_id': self.user_id,
             'name': self.name,
             'description': self.description[0],
-            'flashcards': self.flashcards
+            'flashcards': [flashcard.to_dict() for flashcard in self.flashcards if self.flashcards]
         }
 
     @classmethod
@@ -94,7 +94,7 @@ class FlashcardDeckModel(Model):
 
 class FlashcardModel(Model):
 
-    def __init__(self, flashcard_deck_id, question, answer, _id):
+    def __init__(self, flashcard_deck_id, question, answer, _id=None):
         Model.__init__(self)
         self.id = _id
         self.flashcard_deck_id = flashcard_deck_id

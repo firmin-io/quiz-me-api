@@ -9,6 +9,24 @@ from api.utils.id_utils import generate_id
 table = db.dynamo_db.Table('qm_flashcard')
 
 
+def delete(_id):
+    print('flashcard id:', _id)
+    try:
+        table.delete_item(
+            Key={
+                'id': _id
+            }
+        )
+
+        print('deleted:', _id)
+
+    except ClientError as e:
+        raise errors.ApiError(errors.internal_server_error, e)
+
+    except Exception as e:
+        raise errors.ApiError(errors.internal_server_error, e)
+
+
 def get_by_flashcard_deck_id(flashcard_deck_id, quietly=False):
     try:
         response = table.query(
