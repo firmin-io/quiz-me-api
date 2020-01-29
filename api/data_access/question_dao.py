@@ -59,6 +59,24 @@ def get_by_id(_id):
         raise errors.ApiError(errors.internal_server_error)
 
 
+def delete(question_id):
+    print('question_id:', question_id)
+    try:
+        table.delete_item(
+            Key={
+                'id': question_id
+            }
+        )
+
+        print('deleted:', question_id)
+
+    except ClientError as e:
+        raise errors.ApiError(errors.internal_server_error)
+
+    except Exception as e:
+        raise errors.ApiError(errors.internal_server_error, e)
+
+
 def create(question):
     logging.debug('creating question')
     try:

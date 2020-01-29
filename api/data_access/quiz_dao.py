@@ -67,11 +67,20 @@ def get_by_id(_id):
 
 def delete(quiz_id):
     try:
+        quiz = get_by_id(quiz_id)
         table.delete_item(
             Key={
-                'id': id
+                'id': quiz_id
             }
         )
+
+        print('deleted:', quiz_id)
+        for question in quiz.questions:
+            question_dao.delete(question.id)
+
+    except errors.ApiError as e:
+        if e.api_error.issue == 'NOT_FOUND':
+            return
 
     except ClientError as e:
         raise errors.ApiError(errors.internal_server_error)

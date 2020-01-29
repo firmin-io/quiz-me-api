@@ -13,12 +13,12 @@ class Error:
         if self.debug_id:
             return {
                 'issue': self.issue,
-                'description': self.description,
+                'description': self.description[0],
                 'debug_id': self.debug_id
             }
         return {
             'issue': self.issue,
-            'description': self.description
+            'description': self.description[0]
         }
 
 

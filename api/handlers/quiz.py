@@ -6,7 +6,7 @@ from api.common.validation import validate_authorization_header_is_present, vali
 from api.data_access import quiz_dao
 from api.model.model import QuizModel
 from api.utils import auth_utils
-from api.utils.api_utils import build_response_with_body
+from api.utils.api_utils import build_response_with_body, build_response_without_body
 
 
 def create_quiz(event, context):
@@ -30,7 +30,7 @@ def create_quiz(event, context):
         return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))
 
 
-def get_user_quizzes(event, context):
+def get_by_user_id(event, context):
     try:
         logging.debug('event headers: ', event['headers'])
         token = validate_authorization_header_is_present(event['headers'])
@@ -57,8 +57,8 @@ def delete_quiz(event, context):
     try:
         token = validate_authorization_header_is_present(event['headers'])
         auth_utils.decode_auth_token(token)
-
-        return build_response_with_body(200, quiz_dao.delete(event['pathParameters']['user_id']))
+        quiz_dao.delete(event['pathParameters']['quiz_id'])
+        return build_response_without_body(204)
 
     except errors.ApiError as ae:
         return errors.build_response_from_api_error(ae)

@@ -30,8 +30,8 @@ def get_by_flashcard_deck_id(flashcard_deck_id, quietly=False):
         raise errors.ApiError(errors.internal_server_error)
 
 
-def get_by_flashcard_deck_id_quietly(quiz_id):
-    return get_by_flashcard_deck_id(quiz_id, True)
+def get_by_flashcard_deck_id_quietly(flashcard_deck_id):
+    return get_by_flashcard_deck_id(flashcard_deck_id, True)
 
 
 def get_by_id(_id):
@@ -59,7 +59,7 @@ def create(flashcard):
         _id = generate_id()
         flashcard.id = _id
         table.put_item(
-            Item=flashcard.to_dict()
+            Item=flashcard.to_dynamo_dict()
         )
         return get_by_id(_id)
 

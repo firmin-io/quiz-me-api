@@ -37,20 +37,20 @@ def get_by_user_id(user_id):
 
 def get_by_id(_id):
     try:
-        print('getting quiz by id')
+        print('getting deck by id')
         response = table.get_item(
             Key={
                 'id': _id
             }
         )
-        print('got quiz by id')
+        print('got deck by id')
         item = validation.validate_item_exists(response)
         print('got item')
-        quiz = QuizModel.from_dynamo_json(item)
-        print(quiz)
-        questions = question_dao.get_by_quiz_id_quietly(quiz.id)
-        quiz.questions = questions
-        return quiz
+        flashcard_deck = FlashcardDeckModel.from_dynamo_json(item)
+        print(flashcard_deck)
+        flashcards = flashcard_dao.get_by_flashcard_deck_id_quietly(_id)
+        flashcard_deck.flashcards = flashcards
+        return flashcard_deck
 
     except ClientError:
         raise errors.ApiError(errors.internal_server_error)
@@ -62,13 +62,20 @@ def get_by_id(_id):
         errors.ApiError(errors.internal_server_error, e)
 
 
-def create(quiz):
+def create(flashcard_deck):
     try:
+        print('creating deck')
+
         _id = generate_id()
-        quiz.id = _id
-        table.put_item(
-            Item=quiz.to_dict(True)
+        print(_id)
+        flashcard_deck.id = _id
+        print("description: ", flashcard_deck.description)
+        print(flashcard_deck.to_dynamo_dict())
+        response = table.put_item(
+            Item=flashcard_deck.to_dynamo_dict()
         )
+        print('dynamo response: ', response)
+        print('created deck')
         return get_by_id(_id)
     except ClientError as e:
         raise errors.ApiError(errors.internal_server_error, e)

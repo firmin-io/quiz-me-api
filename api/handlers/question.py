@@ -6,7 +6,7 @@ from api.common.validation import validate_authorization_header_is_present
 from api.data_access import question_dao, quiz_dao
 from api.model.model import QuestionModel
 from api.utils import auth_utils
-from api.utils.api_utils import build_response_with_body
+from api.utils.api_utils import build_response_with_body, build_response_without_body
 
 
 def create_question(event, context):
@@ -44,5 +44,14 @@ def update_question(event, context):
 
 
 def delete_question(event, context):
-    # TODO
-    pass
+    try:
+        token = validate_authorization_header_is_present(event['headers'])
+        auth_utils.decode_auth_token(token)
+        question_dao.delete(event['pathParameters']['question_id'])
+        return build_response_without_body(204)
+
+    except errors.ApiError as ae:
+        return errors.build_response_from_api_error(ae)
+
+    except Exception as e:
+        return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))

@@ -5,7 +5,7 @@ generates a flask service in server.py based on the serverless.yaml file
 import yaml
 import json
 
-import_lines = ['from flask import Flask, request\n', 'import json\n', 'import logging\n\n']
+import_lines = ['from flask import Flask, request\n', 'import logging\n\n']
 
 code_lines = ['\n\n', 'api = Flask(__name__)', '\n\n', '''
 def get_auth_header(r):
@@ -89,7 +89,7 @@ def build_function(name, data):
 
 
 def write_file(imports, code):
-    f = open("flask.py", "w")
+    f = open("server.py", "w")
     for i in imports:
         f.write(i)
 

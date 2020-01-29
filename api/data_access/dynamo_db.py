@@ -140,6 +140,92 @@ def create_tables(d):
         ]
     )
 
+    # flashcard deck
+    d.create_table(
+        TableName='qm_flashcard_deck',
+        KeySchema=[
+            {
+                'AttributeName': 'id',
+                'KeyType': 'HASH'  # Partition key
+            }
+        ],
+        AttributeDefinitions=[
+            {
+                'AttributeName': 'id',
+                'AttributeType': 'S'
+            },
+            {
+                'AttributeName': 'user_id',
+                'AttributeType': 'S'
+            }
+        ],
+        ProvisionedThroughput={
+            'ReadCapacityUnits': 10,
+            'WriteCapacityUnits': 10
+        },
+        GlobalSecondaryIndexes=[
+            {
+                'IndexName': 'user_id-index',
+                'KeySchema': [
+                    {
+                        'AttributeName': 'user_id',
+                        'KeyType': 'HASH'  # Partition key
+                    }
+                ],
+                'Projection': {
+                    'ProjectionType': 'ALL'
+                },
+                'ProvisionedThroughput': {
+                    'ReadCapacityUnits': 10,
+                    'WriteCapacityUnits': 10
+                }
+            }
+        ]
+    )
+
+    # flashcard
+    d.create_table(
+        TableName='qm_flashcard',
+        KeySchema=[
+            {
+                'AttributeName': 'id',
+                'KeyType': 'HASH'  # Partition key
+            }
+        ],
+        AttributeDefinitions=[
+            {
+                'AttributeName': 'id',
+                'AttributeType': 'S'
+            },
+            {
+                'AttributeName': 'flashcard_deck_id',
+                'AttributeType': 'S'
+            }
+        ],
+        ProvisionedThroughput={
+            'ReadCapacityUnits': 10,
+            'WriteCapacityUnits': 10
+        },
+        GlobalSecondaryIndexes=[
+            {
+                'IndexName': 'flashcard_deck_id-index',
+                'KeySchema': [
+                    {
+                        'AttributeName': 'flashcard_deck_id',
+                        'KeyType': 'HASH'  # Partition key
+                    }
+                ],
+                'Projection': {
+                    'ProjectionType': 'ALL'
+                },
+                'ProvisionedThroughput': {
+                    'ReadCapacityUnits': 10,
+                    'WriteCapacityUnits': 10
+                }
+            }
+        ]
+    )
+
 
 if env == 'PROD':
     dynamo_db = boto3.resource('dynamodb')

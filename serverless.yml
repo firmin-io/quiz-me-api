@@ -77,8 +77,8 @@ package:
     - Pipfile
     - venv/**
     - node_modules/**
-    - flask.py
-    - server_generator.py
+    - server.py
+    - generator.py
 
 functions:
   login:
@@ -105,6 +105,14 @@ functions:
           method: post
           cors: true
 
+  delete_quiz:
+    handler: api/handlers/quiz.delete_quiz
+    events:
+      - http:
+          path: qm/quizzes/{quiz_id}
+          method: delete
+          cors: true
+
   create_question:
     handler: api/handlers/question.create_question
     events:
@@ -113,11 +121,38 @@ functions:
           method: post
           cors: true
 
+  delete_question:
+    handler: api/handlers/question.delete_question
+    events:
+      - http:
+          path: qm/questions/{question_id}
+          method: delete
+          cors: true
+
+  create_flashcard_deck:
+    handler: api/handlers/flashcard_deck.create_flashcard_deck
+    events:
+      - http:
+          path: qm/flashcard-decks
+          method: post
+          cors: true
+
   get_user_quizzes:
-    handler: api/handlers/quiz.get_user_quizzes
+    handler: api/handlers/quiz.get_by_user_id
     events:
       - http:
           path: qm/users/{user_id}/quizzes
+          method: get
+          cors: true
+          request:
+            paths:
+              user_id: true
+
+  get_user_flashcard_decks:
+    handler: api/handlers/flashcard_deck.get_by_user_id
+    events:
+      - http:
+          path: qm/users/{user_id}/flashcard-decks
           method: get
           cors: true
           request:

@@ -15,11 +15,11 @@ class Model:
         pass
 
     @classmethod
-    def from_request_json(cls, json, logger=None):
+    def from_request_json(cls, json):
         pass
 
     @classmethod
-    def from_dynamo_json(cls, json, logger=None):
+    def from_dynamo_json(cls, json):
         pass
 
 
@@ -31,14 +31,14 @@ class LoginRequestModel(Model):
         self.password = password
 
     @classmethod
-    def from_request_json(cls, json, logger=None):
+    def from_request_json(cls, json):
         try:
             return LoginRequestModel(json['email'], json['password'])
         except KeyError as e:
             raise_bad_request_error(e)
 
     @classmethod
-    def from_dynamo_json(cls, json, logger=None):
+    def from_dynamo_json(cls, json):
         pass
 
 
@@ -46,7 +46,7 @@ class FlashcardDeckModel(Model):
 
     def __init__(self, user_id, name, description, _id=None, flashcards=None):
         Model.__init__(self)
-        self._id = _id
+        self.id = _id
         self.user_id = user_id
         self.name = name
         self.description = description,
@@ -54,30 +54,42 @@ class FlashcardDeckModel(Model):
 
     def to_dict(self):
         return {
-            'id': self._id,
+            'id': self.id,
             'user_id': self.user_id,
             'name': self.name,
-            'description': self.description,
+            'description': self.description[0],
             'flashcards': self.flashcards
         }
 
     @classmethod
-    def from_request_json(cls, json, logger=None):
-        return FlashcardDeckModel(
-            user_id=json['user_id'],
-            name=json['name'],
-            description=json['description'],
-            flashcards=[]
-        )
+    def from_request_json(cls, json):
+        try:
+            desc = json['description']
+            print('desc***', desc)
+            return FlashcardDeckModel(
+                user_id=json['user_id'],
+                name=json['name'],
+                description=json['description']
+            )
+        except KeyError as e:
+            raise_bad_request_error(e)
 
     @classmethod
-    def from_dynamo_json(cls, json, logger=None):
+    def from_dynamo_json(cls, json):
         return FlashcardDeckModel(
             _id=json['id'],
             user_id=json['user_id'],
             name=json['name'],
             description=json['description']
         )
+
+    def to_dynamo_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'name': self.name,
+            'description': self.description[0]
+        }
 
 
 class FlashcardModel(Model):
@@ -89,6 +101,9 @@ class FlashcardModel(Model):
         self.question = question
         self.answer = answer
 
+    def to_dynamo_dict(self):
+        return self.to_dict()
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -98,7 +113,7 @@ class FlashcardModel(Model):
         }
 
     @classmethod
-    def from_request_json(cls, json, logger=None):
+    def from_request_json(cls, json):
         try:
             return FlashcardModel(
                 flashcard_deck_id=json['flashcard_deck_id'],
@@ -109,7 +124,7 @@ class FlashcardModel(Model):
             raise_bad_request_error(e)
 
     @classmethod
-    def from_dynamo_json(cls, json, logger=None):
+    def from_dynamo_json(cls, json):
         try:
             return FlashcardModel(
                 _id=json['id'],
@@ -144,7 +159,7 @@ class UserModel(Model):
         return self.to_dict()
 
     @classmethod
-    def from_request_json(cls, json, logger=None):
+    def from_request_json(cls, json):
         print('building model')
         print(json)
         try:
@@ -159,7 +174,7 @@ class UserModel(Model):
             raise_bad_request_error(e)
 
     @classmethod
-    def from_dynamo_json(cls, json, logger=None):
+    def from_dynamo_json(cls, json):
         try:
             return UserModel(
                 _id=json['id'],
@@ -189,7 +204,7 @@ class AnswerModel(Model):
         return self.to_dict()
 
     @classmethod
-    def from_request_json(cls, json, logger=None):
+    def from_request_json(cls, json):
         try:
             return AnswerModel(
                 value=json['value'],
@@ -199,7 +214,7 @@ class AnswerModel(Model):
             raise_bad_request_error(e)
 
     @classmethod
-    def from_dynamo_json(cls, json, logger=None):
+    def from_dynamo_json(cls, json):
         try:
             return AnswerModel(
                 value=json['value'],
@@ -232,7 +247,7 @@ class QuestionModel(Model):
         return self.to_dict()
 
     @classmethod
-    def from_request_json(cls, json, logger=None):
+    def from_request_json(cls, json):
         logging.debug(json)
         try:
             return QuestionModel(
@@ -245,7 +260,7 @@ class QuestionModel(Model):
             raise_bad_request_error(e)
 
     @classmethod
-    def from_dynamo_json(cls, json, logger=None):
+    def from_dynamo_json(cls, json):
         try:
             return QuestionModel(
                 _id=json['id'],
@@ -287,7 +302,7 @@ class QuizModel(Model):
         }
         
     @classmethod
-    def from_request_json(cls, json, logger=None):
+    def from_request_json(cls, json):
         print(json)
         try:
             return QuizModel(
@@ -299,7 +314,7 @@ class QuizModel(Model):
             raise_bad_request_error(e)
 
     @classmethod
-    def from_dynamo_json(cls, json, logger=None):
+    def from_dynamo_json(cls, json):
         try:
             return QuizModel(
                 _id=json['id'],
