@@ -13,10 +13,28 @@ def create_quiz(event, context):
     try:
         token = validate_authorization_header_is_present(event['headers'])
         auth_utils.decode_auth_token(token)
-        quiz_request = QuizModel.from_request_json(json.loads(event['body']))
+        quiz_request = QuizModel.from_request(json.loads(event['body']))
         logging.debug(quiz_request.user_id)
         validate_user_exists_by_id(quiz_request.user_id)
         quiz = quiz_dao.create(quiz_request)
+
+        logging.debug(quiz)
+        logging.debug(quiz.to_dict())
+
+        return build_response_with_body(201, quiz.to_dict())
+
+    except errors.ApiError as ae:
+        return errors.build_response_from_api_error(ae)
+
+    except Exception as e:
+        return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))
+
+
+def get_quiz_by_id(event, context):
+    try:
+        token = validate_authorization_header_is_present(event['headers'])
+        auth_utils.decode_auth_token(token)
+        quiz = quiz_dao.get_by_id(event['pathParameters']['quiz'])
 
         logging.debug(quiz)
         logging.debug(quiz.to_dict())
@@ -50,7 +68,22 @@ def get_by_user_id(event, context):
 
 
 def update_quiz(event, context):
-    pass
+    try:
+        token = validate_authorization_header_is_present(event['headers'])
+        auth_utils.decode_auth_token(token)
+        quiz_request = QuizModel.from_update_request(json.loads(event['body']))
+        quiz = quiz_dao.update(quiz_request)
+
+        logging.debug(quiz)
+        logging.debug(quiz.to_dict())
+
+        return build_response_with_body(200, quiz.to_dict())
+
+    except errors.ApiError as ae:
+        return errors.build_response_from_api_error(ae)
+
+    except Exception as e:
+        return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))
 
 
 def delete_quiz(event, context):

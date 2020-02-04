@@ -16,7 +16,7 @@ def create_question(event, context):
 
         auth_utils.decode_auth_token(token)
 
-        question_request = QuestionModel.from_request_json(json.loads(event['body']))
+        question_request = QuestionModel.from_request(json.loads(event['body']))
         validate_quiz_exists(question_request.quiz_id)
         return build_response_with_body(201, question_dao.create(question_request).to_dict())
 
@@ -28,8 +28,22 @@ def create_question(event, context):
 
 
 def update_question(event, context):
-    # TODO
-    pass
+    try:
+        token = validate_authorization_header_is_present(event['headers'])
+        auth_utils.decode_auth_token(token)
+        question_model = QuestionModel.from_update_request(json.loads(event['body']))
+        quiz = question_dao.update(question_model)
+
+        logging.debug(quiz)
+        logging.debug(quiz.to_dict())
+
+        return build_response_with_body(200, quiz.to_dict())
+
+    except errors.ApiError as ae:
+        return errors.build_response_from_api_error(ae)
+
+    except Exception as e:
+        return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))
 
 
 def delete_question(event, context):

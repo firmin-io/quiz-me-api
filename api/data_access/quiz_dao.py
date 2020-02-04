@@ -20,7 +20,7 @@ def get_by_user_id(user_id):
         items = validation.validate_items_exist_quietly(response)
         quizzes = []
         for item in items:
-            quiz = QuizModel.from_dynamo_json(item)
+            quiz = QuizModel.from_dynamo(item)
             questions = question_dao.get_by_quiz_id_quietly(quiz.id)
             quiz.questions = questions
             quizzes.append(quiz)
@@ -48,7 +48,7 @@ def get_by_id(_id):
         logging.debug('got quiz by id')
         item = validation.validate_item_exists(response)
         logging.debug('got item')
-        quiz = QuizModel.from_dynamo_json(item)
+        quiz = QuizModel.from_dynamo(item)
         logging.debug(quiz.to_dynamo_dict())
         logging.debug('getting questions for quiz')
         questions = question_dao.get_by_quiz_id_quietly(quiz.id)
@@ -94,7 +94,7 @@ def create(quiz):
         logging.debug('creating quiz')
         _id = generate_id()
         quiz.id = _id
-        response = table.put_item(
+        table.put_item(
             Item=quiz.to_dynamo_dict()
         )
         logging.debug('created quiz')
@@ -108,3 +108,31 @@ def create(quiz):
 
     except Exception as e:
         raise errors.ApiError(errors.internal_server_error, e)
+
+
+def update(quiz):
+    try:
+        table.update_item(
+            Key={
+                'id': quiz.id
+            },
+            UpdateExpression='set #n=:n, #d=:d',
+            ExpressionAttributeValues={
+                ':n': quiz.name,
+                ':d': quiz.description
+            },
+            ExpressionAttributeNames={
+                '#n': 'name',
+                '#d': 'description'
+            }
+        )
+        return get_by_id(quiz.id)
+    except ClientError as e:
+        raise errors.ApiError(errors.internal_server_error, e)
+
+    except errors.ApiError as e:
+        raise e
+
+    except Exception as e:
+        raise errors.ApiError(errors.internal_server_error, e)
+

@@ -22,9 +22,16 @@ def get_by_email(email):
         logging.debug('dynamo response: ')
         logging.debug(response)
         item = validation.validate_items_exist(response)[0]
-        return UserModel.from_dynamo_json(item)
+        return UserModel.from_dynamo(item)
     except ClientError:
         raise errors.ApiError(errors.internal_server_error)
+
+    except Exception as e:
+        if str(e) == 'list index out of range':
+            print(e)
+            raise errors.ApiError(errors.not_found)
+        else:
+            raise errors.ApiError(errors.internal_server_error, e)
 
 
 def get_by_id(_id):
@@ -37,7 +44,7 @@ def get_by_id(_id):
         )
         logging.debug('dynamo response: ', response)
         item = validation.validate_item_exists(response)
-        return UserModel.from_dynamo_json(item)
+        return UserModel.from_dynamo(item)
     except ClientError as e:
         logging.debug(e)
         raise errors.ApiError(errors.internal_server_error)

@@ -18,7 +18,7 @@ def get_by_user_id(user_id):
         items = validation.validate_items_exist_quietly(response)
         decks = []
         for item in items:
-            deck = FlashcardDeckModel.from_dynamo_json(item)
+            deck = FlashcardDeckModel.from_dynamo(item)
             flashcards = flashcard_dao.get_by_flashcard_deck_id_quietly(deck.id)
             deck.flashcards = flashcards
             decks.append(deck)
@@ -71,7 +71,7 @@ def get_by_id(_id):
         print('got deck by id')
         item = validation.validate_item_exists(response)
         print('got item')
-        flashcard_deck = FlashcardDeckModel.from_dynamo_json(item)
+        flashcard_deck = FlashcardDeckModel.from_dynamo(item)
         print(flashcard_deck)
         flashcards = flashcard_dao.get_by_flashcard_deck_id_quietly(_id)
         flashcard_deck.flashcards = flashcards

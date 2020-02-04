@@ -12,7 +12,7 @@ def create_flashcard_deck(event, context):
     try:
         token = validate_authorization_header_is_present(event['headers'])
         auth_utils.decode_auth_token(token)
-        deck_request = FlashcardDeckModel.from_request_json(json.loads(event['body']))
+        deck_request = FlashcardDeckModel.from_request(json.loads(event['body']))
         validate_user_exists_by_id(deck_request.user_id)
         print('deck: ', deck_request.to_dynamo_dict())
         return build_response_with_body(201, flashcard_deck_dao.create(deck_request).to_dict())
@@ -52,9 +52,23 @@ def get_by_user_id(event, context):
 
         items = flashcard_deck_dao.get_by_user_id(event['pathParameters']['user_id'])
 
-        json = [item.to_dict() for item in items if items]
+        return build_response_with_body(200, [item.to_dict() for item in items if items])
 
-        return build_response_with_body(200, json)
+    except errors.ApiError as ae:
+        return errors.build_response_from_api_error(ae)
+
+    except Exception as e:
+        return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))
+
+
+def get_by_flashcard_deck_id(event, context):
+    try:
+        token = validate_authorization_header_is_present(event['headers'])
+        auth_utils.decode_auth_token(token)
+
+        items = flashcard_deck_dao.get_by_id(event['pathParameters']['flashcard_deck_id'])
+
+        return build_response_with_body(200, [item.to_dict() for item in items if items])
 
     except errors.ApiError as ae:
         return errors.build_response_from_api_error(ae)

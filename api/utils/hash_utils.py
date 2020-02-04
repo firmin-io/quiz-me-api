@@ -17,4 +17,4 @@ def check_password(password, password_hash):
 
     except Exception as e:
         print('unable to check password')
-        raise errors.ApiError(errors.failed_to_login, e)
+        raise errors.ApiError(errors.invalid_user_name_or_password, e)

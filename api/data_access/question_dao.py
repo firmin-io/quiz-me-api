@@ -21,7 +21,7 @@ def get_by_quiz_id(quiz_id, quietly=False):
         logging.debug('dynamo response')
         logging.debug(response)
         items = validation.validate_items_exist(response, quietly)
-        questions = [QuestionModel.from_dynamo_json(question) for question in items if items]
+        questions = [QuestionModel.from_dynamo(question) for question in items if items]
 
         return questions
 
@@ -47,7 +47,7 @@ def get_by_id(_id):
             }
         )
         item = validation.validate_item_exists(response)
-        return QuestionModel.from_dynamo_json(item)
+        return QuestionModel.from_dynamo(item)
 
     except ClientError:
         raise errors.ApiError(errors.internal_server_error)
@@ -72,6 +72,37 @@ def delete(question_id):
 
     except ClientError as e:
         raise errors.ApiError(errors.internal_server_error)
+
+    except Exception as e:
+        raise errors.ApiError(errors.internal_server_error, e)
+
+
+def update(question):
+    try:
+        print('*$', question.to_dynamo_dict())
+        table.update_item(
+            Key={
+                'id': question.id
+            },
+            UpdateExpression='set #qt=:qt, #q=:q, #a=:a',
+            ExpressionAttributeValues={
+                ':qt': question.question_type,
+                ':q': question.question,
+                ':a': [answer.to_dynamo_dict() for answer in question.answers if question.answers]
+            },
+            ExpressionAttributeNames={
+                '#qt': 'question_type',
+                '#q': 'question',
+                '#a': 'answers'
+            }
+        )
+        return get_by_id(question.id)
+    except ClientError as e:
+        raise errors.ApiError(errors.internal_server_error, e)
+
+    except errors.ApiError as e:
+        if e.api_error.issue == 'MISSING_EXPECTED_ATTRIBUTE':
+            raise errors.ApiError(errors.not_found, e)
 
     except Exception as e:
         raise errors.ApiError(errors.internal_server_error, e)

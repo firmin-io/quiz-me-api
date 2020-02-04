@@ -10,7 +10,7 @@ from api.utils.api_utils import build_response_with_body
 
 def login(event, context):
     try:
-        login_request = LoginRequestModel.from_request_json(json.loads(event['body']))
+        login_request = LoginRequestModel.from_request(json.loads(event['body']))
         user = ud.get_by_email(login_request.email)
         # this throws an exception if the passwords don't match
         hash_utils.check_password(login_request.password, user.password)
@@ -20,8 +20,14 @@ def login(event, context):
                                               'email': user.email,
                                               'token': auth_utils.generate_auth_token(user.id).decode()})
 
-    except errors.ApiError as ae:
-        return errors.build_response_from_api_error(ae)
+    except errors.ApiError as e:
+        print('boo')
+        print(e)
+        if e.api_error.issue == 'NOT_FOUND':
+            print("wtffff")
+            return errors.build_response_from_api_error(errors.ApiError(errors.invalid_user_name_or_password))
+        else:
+            return errors.build_response_from_api_error(e)
 
     except Exception as e:
         return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))
@@ -30,7 +36,7 @@ def login(event, context):
 def register(event, context):
     try:
         logging.debug('register')
-        user_request = UserModel.from_request_json(json.loads(event['body']))
+        user_request = UserModel.from_request(json.loads(event['body']))
         logging.debug('user model:')
         logging.debug(user_request)
         validation.validate_email(user_request.email)

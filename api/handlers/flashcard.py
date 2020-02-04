@@ -13,7 +13,7 @@ def create_flashcard(event, context):
     try:
         token = validate_authorization_header_is_present(event['headers'])
         auth_utils.decode_auth_token(token)
-        flashcard_request = FlashcardModel.from_request_json(json.loads(event['body']))
+        flashcard_request = FlashcardModel.from_request(json.loads(event['body']))
         validate_flashcard_deck_exists(flashcard_request.flashcard_deck_id)
         return build_response_with_body(201, flashcard_dao.create(flashcard_request).to_dict())
 

@@ -105,6 +105,17 @@ functions:
           method: post
           cors: true
 
+  get_quiz:
+    handler: api/handlers/quiz.get_quiz_by_id
+    events:
+      - http:
+          path: qm/quizzes/{quiz_id}
+          method: get
+          cors: true
+          request:
+            paths:
+              quiz_id: true
+
   delete_quiz:
     handler: api/handlers/quiz.delete_quiz
     events:
@@ -114,11 +125,11 @@ functions:
           cors: true
 
   update_quiz:
-    handler: api/handlers/quiz.delete_quiz
+    handler: api/handlers/quiz.update_quiz
     events:
       - http:
-          path: qm/quizzes/{quiz_id}
-          method: delete
+          path: qm/quizzes
+          method: put
           cors: true
 
   create_question:
@@ -141,7 +152,7 @@ functions:
     handler: api/handlers/question.update_question
     events:
       - http:
-          path: qm/questions/{question_id}
+          path: qm/questions
           method: put
           cors: true
 
@@ -152,6 +163,18 @@ functions:
           path: qm/flashcard-decks
           method: post
           cors: true
+
+
+  get_flashcard_deck:
+    handler: api/handlers/flashcard_deck.get_by_flashcard_deck_id
+    events:
+      - http:
+          path: qm/flashcard-decks/{flashcard_deck_id}
+          method: get
+          cors: true
+          request:
+            paths:
+              flashcard_deck_id: true
 
   create_flashcard:
     handler: api/handlers/flashcard.create_flashcard

@@ -15,7 +15,7 @@ docutils==0.15.2
 durationpy==0.5
 environs==7.1.0
 Flask==1.1.1
-Flask-RESTful==0.3.7
+flask-cors
 future==0.16.0
 hjson==3.0.1
 idna==2.8

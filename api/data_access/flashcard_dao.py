@@ -34,7 +34,7 @@ def get_by_flashcard_deck_id(flashcard_deck_id, quietly=False):
             KeyConditionExpression=Key('flashcard_deck_id').eq(flashcard_deck_id)
         )
         items = validation.validate_items_exist(response, quietly)
-        flashcards = [FlashcardModel.from_dynamo_json(item) for item in items if items]
+        flashcards = [FlashcardModel.from_dynamo(item) for item in items if items]
 
         return flashcards
 
@@ -60,7 +60,7 @@ def get_by_id(_id):
             }
         )
         item = validation.validate_item_exists(response)
-        return FlashcardModel.from_dynamo_json(item)
+        return FlashcardModel.from_dynamo(item)
 
     except ClientError:
         raise errors.ApiError(errors.internal_server_error)
