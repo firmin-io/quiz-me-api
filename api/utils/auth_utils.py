@@ -2,7 +2,7 @@ import datetime
 
 import jwt
 
-from app.main.common import errors
+from api.common import errors
 
 __key = '31c90408-eb0f-4120-b125-c88c1491cb6e-quiz-me-2020'
 

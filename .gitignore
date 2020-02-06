@@ -1,3 +1,7 @@
 /venv
 Pipfile
 **__pycache__
+.serverless
+node_modules
+package-lock.json
+.requirements

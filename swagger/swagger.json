@@ -26,7 +26,7 @@
       "name": "flashcards"
     }
   ],
-  "basePath": "/v1/qm",
+  "basePath": "/qm",
   "paths": {
     "/register": {
       "post": {

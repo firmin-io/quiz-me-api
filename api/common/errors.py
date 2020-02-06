@@ -1,3 +1,4 @@
+from api.utils.api_utils import build_response_with_body
 
 
 class Error:
@@ -8,16 +9,16 @@ class Error:
         self.description = description,
         self.debug_id = debug_id
 
-    def to_json(self):
+    def to_dict(self):
         if self.debug_id:
             return {
                 'issue': self.issue,
-                'description': self.description,
+                'description': self.description[0],
                 'debug_id': self.debug_id
             }
         return {
             'issue': self.issue,
-            'description': self.description
+            'description': self.description[0]
         }
 
 
@@ -45,6 +46,8 @@ missing_required_param = Error('BAD_REQUEST', 'A required parameter is missing',
 
 failed_to_login = Error('UNPROCESSABLE_ENTITY', 'Failed to login', 422)
 
+invalid_user_name_or_password = Error('INVALID_USER_NAME_OR_PASSWORD', 'Invalid username or password', 422)
+
 already_registered = Error('ALREADY_REGISTERED', 'An account exists for that email', 422)
 
 invalid_email = Error('INVALID_EMAIL', 'The email is invalid', 400)
@@ -53,10 +56,15 @@ invalid_user_id = Error('INVALID_USER_ID', 'The provided user id is invalid', 42
 
 invalid_quiz_id = Error('INVALID_QUIZ_ID', 'The provided quiz id is invalid', 422)
 
+invalid_flashcard_deck_id = Error('INVALID_FLASHCARD_DECK_ID', 'The provided flashcard deck id is invalid', 422)
+
 
 def build_response_from_api_error(ae, logger=None):
     if logger and ae.error:
         logger.log(ae.error)
         ae.api_error.debug_id = logger.debug_id
 
-    return ae.api_error.to_json(), ae.api_error.code
+    if ae.error:
+        print(ae.error)
+
+    return build_response_with_body(ae.api_error.code, ae.api_error.to_dict())
