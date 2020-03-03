@@ -34,12 +34,14 @@ def get_quiz_by_id(event, context):
     try:
         token = validate_authorization_header_is_present(event['headers'])
         auth_utils.decode_auth_token(token)
-        quiz = quiz_dao.get_by_id(event['pathParameters']['quiz'])
+        quiz = quiz_dao.get_by_id(event['pathParameters']['quiz_id'])
+
+        print('********* getting quiz')
 
         logging.debug(quiz)
         logging.debug(quiz.to_dict())
 
-        return build_response_with_body(201, quiz.to_dict())
+        return build_response_with_body(200, quiz.to_dict())
 
     except errors.ApiError as ae:
         return errors.build_response_from_api_error(ae)

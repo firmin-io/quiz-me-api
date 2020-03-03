@@ -26,6 +26,17 @@ def build_event_with_path_params(r, param_name, param_value):
             param_name: param_value
         }
     }
+    
+
+def build_event_with_path_params_without_body(r, param_name, param_value):
+    return {
+        'headers': {
+            'Authorization': get_auth_header(r)
+        },
+        'pathParameters': {
+            param_name: param_value
+        }
+    }
 
 
 def build_event(r):
@@ -76,10 +87,14 @@ def build_function(name, data):
     if '<' in path:
         path_param = path.split('>')[0].split('<')[-1]
         code_lines.append('def {}({}):\n'.format(name, path_param))
-        code_lines.append("    event = build_event_with_path_params(request, '{}', {})\n".format(path_param, path_param))
+        if str(http_event['method']).upper() == 'GET':
+            code_lines.append("    event = build_event_with_path_params_without_body(request, '{}', {})\n".format(path_param, path_param))
+        else :
+            code_lines.append("    event = build_event_with_path_params(request, '{}', {})\n".format(path_param, path_param))
         code_lines.append('    logging.debug(event)\n')
         code_lines.append('    res = {}(event, None)\n'.format(m))
         code_lines.append("    return res['body'], res['statusCode']\n")
+
     else:
         code_lines.append('def {}():\n'.format(name))
         code_lines.append('    event = build_event(request)\n')

@@ -121,7 +121,7 @@ functions:
     events:
       - http:
           path: qm/quizzes/{quiz_id}
-          method: put
+          method: delete
           cors: true
 
   update_quiz:
