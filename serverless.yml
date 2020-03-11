@@ -36,32 +36,18 @@ provider:
         - dynamodb:DescribeTable
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/*"
 
-# you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
 
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
 
 plugins:
   - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    usePipenv: false
+    pythonBin: "python"
+    fileName: "prod-requirements.txt"
 
 # you can add packaging information here
 package:
@@ -87,7 +73,16 @@ functions:
       - http:
           path: qm/login
           method: post
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   register:
     handler: api/handlers/account.register
@@ -95,7 +90,16 @@ functions:
       - http:
           path: qm/register
           method: post
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   create_quiz:
     handler: api/handlers/quiz.create_quiz
@@ -103,7 +107,16 @@ functions:
       - http:
           path: qm/quizzes
           method: post
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   get_quiz:
     handler: api/handlers/quiz.get_quiz_by_id
@@ -111,7 +124,16 @@ functions:
       - http:
           path: qm/quizzes/{quiz_id}
           method: get
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
           request:
             paths:
               quiz_id: true
@@ -122,7 +144,16 @@ functions:
       - http:
           path: qm/quizzes/{quiz_id}
           method: delete
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   update_quiz:
     handler: api/handlers/quiz.update_quiz
@@ -130,7 +161,16 @@ functions:
       - http:
           path: qm/quizzes
           method: put
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   create_question:
     handler: api/handlers/question.create_question
@@ -138,7 +178,16 @@ functions:
       - http:
           path: qm/questions
           method: post
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   delete_question:
     handler: api/handlers/question.delete_question
@@ -146,7 +195,16 @@ functions:
       - http:
           path: qm/questions/{question_id}
           method: delete
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   update_question:
     handler: api/handlers/question.update_question
@@ -154,7 +212,16 @@ functions:
       - http:
           path: qm/questions
           method: put
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   create_flashcard_deck:
     handler: api/handlers/flashcard_deck.create_flashcard_deck
@@ -162,8 +229,16 @@ functions:
       - http:
           path: qm/flashcard-decks
           method: post
-          cors: true
-
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   get_flashcard_deck:
     handler: api/handlers/flashcard_deck.get_by_flashcard_deck_id
@@ -171,7 +246,16 @@ functions:
       - http:
           path: qm/flashcard-decks/{flashcard_deck_id}
           method: get
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
           request:
             paths:
               flashcard_deck_id: true
@@ -182,7 +266,16 @@ functions:
       - http:
           path: qm/flashcards
           method: post
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   delete_flashcard:
     handler: api/handlers/flashcard.delete_flashcard
@@ -190,7 +283,16 @@ functions:
       - http:
           path: qm/flashcards/{flashcard_id}
           method: delete
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   delete_flashcard_deck:
     handler: api/handlers/flashcard_deck.delete_flashcard_deck
@@ -198,7 +300,16 @@ functions:
       - http:
           path: qm/flashcard-decks/{flashcard_deck_id}
           method: delete
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   update_flashcard_deck:
     handler: api/handlers/flashcard_deck.update_flashcard_deck
@@ -206,7 +317,16 @@ functions:
       - http:
           path: qm/flashcard-decks/{flashcard_deck_id}
           method: put
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
 
   get_user_quizzes:
     handler: api/handlers/quiz.get_by_user_id
@@ -214,7 +334,16 @@ functions:
       - http:
           path: qm/users/{user_id}/quizzes
           method: get
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
           request:
             paths:
               user_id: true
@@ -225,7 +354,16 @@ functions:
       - http:
           path: qm/users/{user_id}/flashcard-decks
           method: get
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
           request:
             paths:
               user_id: true

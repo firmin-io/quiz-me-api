@@ -1,12 +1,9 @@
 import logging
 
-from environs import Env
-
-env = Env()
-env.read_env()
-
+env = 'PROD'
 
 logging.getLogger().setLevel(logging.DEBUG)
 
+
 def get_env():
-    return env('ENV')
+    return env
