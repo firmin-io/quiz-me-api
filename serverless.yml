@@ -367,3 +367,21 @@ functions:
           request:
             paths:
               user_id: true
+
+
+  search:
+    handler: api/handlers/question.create_question
+    events:
+      - http:
+          path: qm/questions
+          method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Access-Control-Allow-Origin
