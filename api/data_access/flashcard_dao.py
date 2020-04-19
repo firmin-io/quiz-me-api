@@ -52,6 +52,33 @@ def get_by_flashcard_deck_id_quietly(flashcard_deck_id):
     return get_by_flashcard_deck_id(flashcard_deck_id, True)
 
 
+def update(flashcard):
+    try:
+        table.update_item(
+            Key={
+                'id': flashcard.id
+            },
+            UpdateExpression='set #q=:q, #a=:a',
+            ExpressionAttributeValues={
+                ':q': flashcard.question,
+                ':a': flashcard.answer
+            },
+            ExpressionAttributeNames={
+                '#q': 'question',
+                '#a': 'answer'
+            }
+        )
+        return get_by_id(flashcard.id)
+    except ClientError as e:
+        raise errors.ApiError(errors.internal_server_error, e)
+
+    except errors.ApiError as e:
+        raise e
+
+    except Exception as e:
+        raise errors.ApiError(errors.internal_server_error, e)
+
+
 def get_by_id(_id):
     try:
         response = table.get_item(

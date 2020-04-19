@@ -65,6 +65,28 @@ def get_by_id(_id):
         raise errors.ApiError(errors.internal_server_error, e)
 
 
+def get_all():
+    try:
+        response = table.scan()
+        items = validation.validate_items_exist_quietly(response)
+        quizzes = []
+        for item in items:
+            quiz = QuizModel.from_dynamo(item)
+            questions = question_dao.get_by_quiz_id_quietly(quiz.id)
+            quiz.questions = questions
+            quizzes.append(quiz)
+        return quizzes
+
+    except ClientError:
+        raise errors.ApiError(errors.internal_server_error)
+
+    except errors.ApiError as e:
+        raise e
+
+    except Exception as e:
+        errors.ApiError(errors.internal_server_error, e)
+
+
 def delete(quiz_id):
     try:
         quiz = get_by_id(quiz_id)

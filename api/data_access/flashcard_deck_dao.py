@@ -35,6 +35,54 @@ def get_by_user_id(user_id):
         errors.ApiError(errors.internal_server_error, e)
 
 
+def get_all():
+    try:
+        response = table.scan()
+        items = validation.validate_items_exist_quietly(response)
+        flashcard_decks = []
+        for item in items:
+            flashcard_deck = FlashcardDeckModel.from_dynamo(item)
+            flashcards = flashcard_dao.get_by_flashcard_deck_id_quietly(flashcard_deck.id)
+            flashcard_deck.flashcards = flashcards
+            flashcard_decks.append(flashcard_deck)
+        return flashcard_decks
+
+    except ClientError:
+        raise errors.ApiError(errors.internal_server_error)
+
+    except errors.ApiError as e:
+        raise e
+
+    except Exception as e:
+        errors.ApiError(errors.internal_server_error, e)
+
+
+def update(flashcard_deck):
+    try:
+        table.update_item(
+            Key={
+                'id': flashcard_deck.id
+            },
+            UpdateExpression='set #n=:n, #d=:d',
+            ExpressionAttributeValues={
+                ':n': flashcard_deck.name,
+                ':d': flashcard_deck.description
+            },
+            ExpressionAttributeNames={
+                '#n': 'name',
+                '#d': 'description'
+            }
+        )
+        return get_by_id(flashcard_deck.id)
+    except ClientError as e:
+        raise errors.ApiError(errors.internal_server_error, e)
+
+    except errors.ApiError as e:
+        raise e
+
+    except Exception as e:
+        raise errors.ApiError(errors.internal_server_error, e)
+
 
 def delete(_id):
     try:

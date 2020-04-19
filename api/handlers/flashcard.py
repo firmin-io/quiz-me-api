@@ -25,7 +25,22 @@ def create_flashcard(event, context):
 
 
 def update_flashcard(event, context):
-    return errors.build_response_from_api_error(errors.ApiError(errors.forbidden))
+    try:
+        token = validate_authorization_header_is_present(event['headers'])
+        auth_utils.decode_auth_token(token)
+        flashcard_request = FlashcardModel.from_update_request(json.loads(event['body']))
+        flashcard = flashcard_dao.update(flashcard_request)
+
+        logging.debug(flashcard)
+        logging.debug(flashcard.to_dict())
+
+        return build_response_with_body(200, flashcard.to_dict())
+
+    except errors.ApiError as ae:
+        return errors.build_response_from_api_error(ae)
+
+    except Exception as e:
+        return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))
 
 
 def delete_flashcard(event, context):

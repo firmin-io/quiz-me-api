@@ -88,6 +88,19 @@ def update_quiz(event, context):
         return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))
 
 
+def get_quizzes(event, context):
+    try:
+        items = quiz_dao.get_all()
+        quizzes = [item.to_dict() for item in items if items]
+        return build_response_with_body(200, quizzes)
+
+    except errors.ApiError as ae:
+        return errors.build_response_from_api_error(ae)
+
+    except Exception as e:
+        return errors.build_response_from_api_error(errors.ApiError(errors.internal_server_error, e))
+
+
 def delete_quiz(event, context):
     try:
         token = validate_authorization_header_is_present(event['headers'])

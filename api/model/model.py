@@ -48,12 +48,12 @@ class LoginRequestModel(Model):
 
 class FlashcardDeckModel(Model):
 
-    def __init__(self, user_id, name, description, _id=None, flashcards=None):
+    def __init__(self, name, description, _id=None, flashcards=None, user_id=None):
         Model.__init__(self)
         self.id = _id
         self.user_id = user_id
         self.name = name
-        self.description = description,
+        self.description = description
         self.flashcards = flashcards
 
     def to_dict(self):
@@ -61,15 +61,28 @@ class FlashcardDeckModel(Model):
             'id': self.id,
             'user_id': self.user_id,
             'name': self.name,
-            'description': self.description[0],
+            'description': self.description,
             'flashcards': [flashcard.to_dict() for flashcard in self.flashcards if self.flashcards]
         }
 
     @classmethod
-    def from_request(cls, json):
+    def from_update_request(cls, json):
         try:
             desc = json['description']
-            print('desc***', desc)
+            logging.debug('desc update ***')
+            logging.debug(json)
+            logging.debug(desc)
+            return FlashcardDeckModel(
+                _id=json['id'],
+                name=json['name'],
+                description=str(desc)
+            )
+        except KeyError as e:
+            raise_bad_request_error(e)
+
+    @classmethod
+    def from_request(cls, json):
+        try:
             return FlashcardDeckModel(
                 user_id=json['user_id'],
                 name=json['name'],
@@ -92,13 +105,13 @@ class FlashcardDeckModel(Model):
             'id': self.id,
             'user_id': self.user_id,
             'name': self.name,
-            'description': self.description[0]
+            'description': self.description
         }
 
 
 class FlashcardModel(Model):
 
-    def __init__(self, flashcard_deck_id, question, answer, _id=None):
+    def __init__(self, question, answer, _id=None, flashcard_deck_id=None):
         Model.__init__(self)
         self.id = _id
         self.flashcard_deck_id = flashcard_deck_id
@@ -115,6 +128,17 @@ class FlashcardModel(Model):
             'question': self.question,
             'answer': self.answer
         }
+
+    @classmethod
+    def from_update_request(cls, json):
+        try:
+            return FlashcardModel(
+                _id=json['id'],
+                question=json['question'],
+                answer=json['answer']
+            )
+        except KeyError as e:
+            raise_bad_request_error(e)
 
     @classmethod
     def from_request(cls, json):

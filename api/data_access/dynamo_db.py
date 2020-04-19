@@ -1,10 +1,10 @@
 import logging
 
 import boto3
-
 from api.utils.env_utils import get_env
 
 env = get_env()
+print('ENV = ' + env)
 
 tables_created = False
 
