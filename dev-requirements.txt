@@ -10,7 +10,7 @@ chardet==3.0.4
 Click==7.0
 clickclick==1.2.2
 connexion==1.1.15
-cryptography==2.8
+cryptography==3.2
 docutils==0.15.2
 durationpy==0.5
 environs==7.1.0
