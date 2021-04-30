@@ -42,5 +42,5 @@ toml==0.10.0
 tqdm==4.19.1
 troposphere==2.5.3
 Unidecode==1.1.1
-urllib3==1.25.7
+urllib3==1.25.8
 zipp==0.6.0
